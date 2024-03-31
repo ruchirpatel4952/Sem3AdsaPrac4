@@ -1,20 +1,26 @@
 #include "Finder.h"
 
-std::vector<int> Finder::findSubstrings(const std::string& s1, const std::string& s2) {
-    std::vector<int> positions;
-    for (size_t length = 1; length <= s2.size(); ++length) {
-        std::string prefix = s2.substr(0, length);
-        bool found = false;
-        for (size_t i = 0; i <= s1.size() - prefix.size(); ++i) {
-            if (s1.substr(i, prefix.size()) == prefix) {
-                positions.push_back(i);
-                found = true;
-                break;
+using namespace std;
+
+class Finder {
+public:
+    vector<int> findSubstrings(string s1, string s2);
+};
+
+vector<int> Finder::findSubstrings(string s1, string s2) {
+    vector<int> result(s2.size(), -1); // Initialize with -1 indicating not found
+
+    for (size_t start = 0; start < s1.size(); ++start) {
+        for (size_t len = 1; len <= s2.size(); ++len) {
+            if (start + len > s1.size()) break; // Avoid overflow
+
+            string prefix = s2.substr(0, len);
+            string segment = s1.substr(start, len);
+
+            if (prefix == segment && result[len - 1] == -1) {
+                result[len - 1] = start; // Record the start position for this prefix
             }
         }
-        if (!found) {
-            positions.push_back(-1);
-        }
     }
-    return positions;
+    return result;
 }
